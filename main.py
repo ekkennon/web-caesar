@@ -19,9 +19,11 @@ import caesar
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-    	message = 'Hello Python World!'
-    	encrypted_message = caesar.encrypt(message,13)
-        self.response.write(encrypted_message)
+    	message = caesar.encrypt('Hello Python World!',13)
+    	textarea = "<textarea>" + message + "</textarea>"
+    	button = "</br><input type='submit' value='Encrypt'/>"
+    	form = "<form>"+ textarea + button + "</form>"
+        self.response.write(form)
 
 routes = [
     ('/', MainHandler)
