@@ -16,14 +16,32 @@
 #
 import webapp2
 import caesar
+import cgi
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-    	message = caesar.encrypt('Hello Python World!',13)
-    	textarea = "<textarea>" + message + "</textarea>"
-    	button = "</br><input type='submit' value='Encrypt'/>"
-    	form = "<form>"+ textarea + button + "</form>"
-        self.response.write(form)
+    	self.response.write(self.buildForm())
+
+    def post(self):
+    	message = self.request.get("msg")
+    	rotate_by = self.request.get("rot")
+    	if rotate_by == "":
+    		rotate_by = 13
+    	else:
+    		rotate_by = int(rotate_by)
+
+    	encrypted = cgi.escape(caesar.encrypt(message,rotate_by))
+
+    	self.response.write(self.buildForm(encrypted))
+
+    def buildForm(self,text=""):
+    	header = "<h2>Caesar Encryption</h2>"
+    	textarea = "<textarea placeholder='Enter a Message' required='true' name='msg'>" + text + "</textarea>"
+    	rotation = "<br/><label>Rotate By:<input type='number' name='rot'/></label>"
+    	button = "<br/><input type='submit' value='Encrypt/Decrypt' />"
+    	form = "<form method='post'>"+ textarea + rotation + button + "</form>"
+
+        return header + form
 
 routes = [
     ('/', MainHandler)
